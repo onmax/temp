@@ -1,6 +1,7 @@
 import math
 import sys
 import time
+import platform
 
 import curses
 
@@ -14,8 +15,8 @@ class UI:
     def __init__(self):
         self.walls = {
             "v": "\u2502",  # │
-            "h": "\u2500",   #  ─
-            "bl": "\u2514",  #  └
+            "h": "\u2500",  # ─
+            "bl": "\u2514",  # └
             "br": "\u2518",  # ┘
             "tr": "\u2510",  # ┐
             "tl": "\u250c",   # ┌
@@ -25,6 +26,25 @@ class UI:
             "t240": "\u251c",  # ├,
             "cross": "\u253c"  # ┼
         }
+
+        self.keys = []
+        if platform.system() == "Windows":
+            self.keys = {
+                "up": 119,
+                "down": 115,
+                "left": 97,
+                "right": 100,
+                "space": 32
+            }
+        elif platform.system() == "Linux":
+            self.keys = {
+                "up": 65,
+                "down": 66,
+                "left": 68,
+                "right": 67,
+                "space": 32
+            }
+
         self.win = curses.initscr()
 
     def print_bar(self, ncolumns, horizontal_wall, left_wall, middle_wall, right_wall):
@@ -61,19 +81,20 @@ class UI:
     def listener(self):
         while True:
             ch = self.win.getch()
-            if ch in range(65, 69) or ch == 32:
+
+            if ch in self.keys.values():
                 break
             time.sleep(0.05)
         dir = None
-        if ch == 65:
+        if ch == self.keys["up"]:
             dir = "up"
-        elif ch == 66:
+        elif ch == self.keys["down"]:
             dir = "down"
-        elif ch == 68:
+        elif ch == self.keys["left"]:
             dir = "left"
-        elif ch == 67:
+        elif ch == self.keys["right"]:
             dir = "right"
-        elif ch == 32:
+        elif ch == self.keys["space"]:
             dir = "space"
 
         return dir
